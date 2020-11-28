@@ -26,25 +26,21 @@ class UserService {
 
 
     }
-     fun  getUser(id:Long):Optional<User>{
+     fun  getUser(id:Long):User{
          logger.info("User with id ${id.toString()} has been Retrieved")
-         return userRepository.findById(id)
+         return userRepository.findUserById(id)
 
      }
     fun getAllUsers(): MutableList<User> {
         return userRepository.findAll()
     }
 
-    fun updateUserById(id: Long,body: NewUser): ResponseEntity<UserResponse> {
-       val fetchUser= getUser(id)
-        fetchUser.map { Details->
-            Details.email=body.email
 
-            val updatedDetails=User(Details)
-            userRepository.save(updatedDetails)
-        }
+    fun updateUserById(id: Long,body: NewUser): User {
+       val fetchUser= getUser(id)
+        fetchUser.email=body.email
         logger.info("User Has been Updated")
-        return ResponseEntity.ok(UserResponse(HttpStatus.OK,"User Has been updated"))
+        return userRepository.save(fetchUser)
     }
     fun  deleteUserById(id: Long):ResponseEntity<UserResponse>{
         userRepository.deleteById(id)
