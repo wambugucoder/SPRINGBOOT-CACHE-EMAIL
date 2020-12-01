@@ -16,6 +16,9 @@ import java.util.*
 class UserService {
     @Autowired
     lateinit var userRepository: UserRepository
+    @Autowired
+    lateinit var emailService: EmailService
+
     val logger: Logger =LoggerFactory.getLogger(UserService::class.java)
 
     fun createUser(body:NewUser): ResponseEntity<UserResponse> {
@@ -28,7 +31,10 @@ class UserService {
     }
      fun  getUser(id:Long):User{
          logger.info("User with id ${id.toString()} has been Retrieved")
-         return userRepository.findUserById(id)
+         val user=userRepository.findUserById(id)
+         emailService.sendEmail(user.email)
+         return user
+
 
      }
     fun getAllUsers(): MutableList<User> {
